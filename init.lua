@@ -204,6 +204,19 @@ end
 ---@return Window[]
 local function getColumn(space, col) return (window_list[space] or {})[col] end
 
+function PaperWM:dumpLayout()
+    self.logger.d("--LAYOUT--")
+    for space_i, space in pairs(window_list) do
+        self.logger.d("\n-- screen[" .. space_i .. "] layout: --")
+
+        for col_i, col in ipairs(space) do
+            for row_i, row in ipairs(col) do
+                self.logger.d("  - " .. row:title())
+            end
+        end
+    end
+end
+
 ---get a window in a row, in a column, in a space from the window_list
 ---@param space Space
 ---@param col number
@@ -918,6 +931,8 @@ local function findWindowDiff(diff)
 end
 
 function PaperWM:focusWindowDiff(diff)
+    self:dumpLayout() -- NOCOMMIT
+
     local new_focused_window = findWindowDiff(diff)
     if not new_focused_window then return end
     new_focused_window:focus()
